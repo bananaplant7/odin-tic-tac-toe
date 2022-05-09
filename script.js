@@ -2,32 +2,61 @@ const board = document.querySelector('.gameBoard');
 const cells = document.querySelectorAll('.cell');
 
 const gameBoard = (() => {
-    let _board = ['X', 'O', 'X', 'O', 'X', 'O', 'O', 'X', 'O'];
-    function _displayBoard() {
+    let _board = [, , , , , , , , ];
+
+    // function that renders _board array onto webpage
+    function displayBoard() {
         for (let i = 0; i < _board.length; i++) {
-            cells[i].textContent = _board[i]
-            
+            cells[i].textContent = _board[i];
+
         }
     }
+
+    function placeMark(i) {
+        _board[i] = flowOfTheGame.getTurn(); // for now, add turn switching later
+    }
+
     return {
-        _displayBoard,
+        displayBoard,
+        placeMark,
     };
 })();
 
-const player = (marker) => {
-    const _marker = () => console.log(marker);
+
+
+const Player = (marker) => {
+    const getMarker = () => marker;
 
     return {
-        _marker
+        getMarker
     };
 };
 
-// and you’re probably going to want an object to control the flow of the game itself
-// maybe the turns 
-const flowOfTheGameItself = (() => {
+const playerX = Player('X');
+const playerO = Player('O');
 
-    return {};
-});
 
+
+// controls flow of game: the turns, win or tie, 
+const flowOfTheGame = (() => {
+    let turn = ''
+    function getTurn() {
+        if (turn == 'X') {
+            turn = 'O'
+            return turn
+        } else {
+            turn = 'X'
+            return turn
+        }
+    }
+    return {
+        getTurn,
+    };
+})();
+
+cells.forEach(cell => cell.addEventListener('click', () => {
+    gameBoard.placeMark(cell.id);
+    gameBoard.displayBoard();
+}, { once: true }));
 
 
