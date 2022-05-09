@@ -2,7 +2,7 @@ const board = document.querySelector('.gameBoard');
 const cells = document.querySelectorAll('.cell');
 
 const gameBoard = (() => {
-    let _board = [, , , , , , , , ];
+    let _board = ['', '', '', '', '', '', '', '', '',];
 
     // function that renders _board array onto webpage
     function displayBoard() {
@@ -13,10 +13,11 @@ const gameBoard = (() => {
     }
 
     function placeMark(i) {
-        _board[i] = flowOfTheGame.getTurn(); // for now, add turn switching later
+        _board[i] = flowOfTheGame.flipTurn();
     }
 
     return {
+        _board,
         displayBoard,
         placeMark,
     };
@@ -37,26 +38,56 @@ const playerO = Player('O');
 
 
 
-// controls flow of game: the turns, win or tie, 
+// controls flow of game: turns, win or tie, 
 const flowOfTheGame = (() => {
-    let turn = ''
-    function getTurn() {
-        if (turn == 'X') {
-            turn = 'O'
-            return turn
+    let currentTurn = '';
+    let winningCombos = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+    function getCurrentTurn() {
+        return currentTurn;
+    }
+    function flipTurn() {
+        if (currentTurn == 'X') {
+            return currentTurn = 'O';
         } else {
-            turn = 'X'
-            return turn
+            return currentTurn = 'X';
         }
     }
+    function checkWin() {
+        return winningCombos.some(combo => {
+            return combo.every(index => {
+                return gameBoard._board[index] == currentTurn;
+            });
+        });
+    }
+    function checkTie() {
+        return gameBoard._board.every(index => {
+            return (index != '');
+        });
+    }
     return {
-        getTurn,
+        getCurrentTurn,
+        flipTurn,
+        checkWin,
+        checkTie,
     };
 })();
 
 cells.forEach(cell => cell.addEventListener('click', () => {
     gameBoard.placeMark(cell.id);
+    if (flowOfTheGame.checkWin()) {
+        console.log(`${flowOfTheGame.getCurrentTurn()} is the winner`);
+    }
+    if (flowOfTheGame.checkTie()) {
+        console.log('Tie')
+    }
     gameBoard.displayBoard();
 }, { once: true }));
-
-
