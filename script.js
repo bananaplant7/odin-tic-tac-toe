@@ -1,6 +1,6 @@
 const board = document.querySelector('.gameBoard');
 const cells = document.querySelectorAll('.cell');
-
+const restartBtn = document.querySelector('#restartBtn');
 const gameBoard = (() => {
     let _board = ['', '', '', '', '', '', '', '', '',];
 
@@ -8,18 +8,25 @@ const gameBoard = (() => {
     function displayBoard() {
         for (let i = 0; i < _board.length; i++) {
             cells[i].textContent = _board[i];
-
         }
     }
-
+    function getBoard() {
+        return _board;
+    }
     function placeMark(i) {
         _board[i] = flowOfTheGame.flipTurn();
     }
 
+    function clearBoard() {
+        _board = ['', '', '', '', '', '', '', '', '',];
+        displayBoard();
+    }
+
     return {
-        _board,
+        getBoard,
         displayBoard,
         placeMark,
+        clearBoard,
     };
 })();
 
@@ -27,7 +34,6 @@ const gameBoard = (() => {
 
 const Player = (marker) => {
     const getMarker = () => marker;
-
     return {
         getMarker
     };
@@ -64,30 +70,43 @@ const flowOfTheGame = (() => {
     function checkWin() {
         return winningCombos.some(combo => {
             return combo.every(index => {
-                return gameBoard._board[index] == currentTurn;
+                return gameBoard.getBoard()[index] == currentTurn;
             });
         });
     }
     function checkTie() {
-        return gameBoard._board.every(index => {
+        return gameBoard.getBoard().every(index => {
             return (index != '');
         });
+    }
+    function addListeners() {
+        cells.forEach(cell => cell.addEventListener('click', () => {
+            if (cell.textContent == '') {
+                gameBoard.placeMark(cell.id);
+                if (checkWin()) {
+                    console.log(`${getCurrentTurn()} is the winner`);
+                }
+                if (flowOfTheGame.checkTie()) {
+                    console.log('Tie');
+                }
+                gameBoard.displayBoard();
+            }
+        }));
+    }
+
+    function restartGame() {
+        gameBoard.clearBoard();
+        currentTurn = '';
     }
     return {
         getCurrentTurn,
         flipTurn,
         checkWin,
         checkTie,
+        addListeners,
+        restartGame,
     };
 })();
 
-cells.forEach(cell => cell.addEventListener('click', () => {
-    gameBoard.placeMark(cell.id);
-    if (flowOfTheGame.checkWin()) {
-        console.log(`${flowOfTheGame.getCurrentTurn()} is the winner`);
-    }
-    if (flowOfTheGame.checkTie()) {
-        console.log('Tie')
-    }
-    gameBoard.displayBoard();
-}, { once: true }));
+flowOfTheGame.addListeners();
+restartBtn.addEventListener('click', () => {flowOfTheGame.restartGame()})
