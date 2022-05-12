@@ -1,32 +1,53 @@
-@import url('https://fonts.googleapis.com/css2?family=Water+Brush&display=swap');
-
-body, html {
-    margin: 0;
-    padding: 0;
+/* GENERAL */
+@font-face {
+    font-family: Eraser Font;
+    src: url(EraserDust-p70d.ttf);
 }
 
 *, *::after, *::before {
     box-sizing: border-box;
-    font-family: 'Water Brush', cursive;
+    margin: 0;
+    padding: 0;
+    font-family: 'Eraser Font', sans-serif;
+}
+/********************/
+
+
+
+
+/* HEADER & BOARD */
+header {
+    font-size: 4rem;
+    margin-top: 2rem;
 }
 
-
-
-
-.gameBoard {
+#container {
     width: 100vw;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url(chalkboard.png);
+    background-size: 100% 100%;
+    background-color: beige;
+    color: #FBF7F5;
+
+}
+
+.gameBoard {
+    width: 70vw;
+    height: 70vh;
     display: grid;
     grid-template-columns: repeat(3, auto);
     place-content: center;
-    font-size: 30px;
+    font-size: 3rem;
     user-select: none;
 }
 
 .cell {
     width: 100px;
     height: 100px;
-    border: 1px solid black;
+    border: 3px solid #FBF7F5;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -48,3 +69,36 @@ body, html {
 .cell:nth-child(3n+3) {
     border-right: none;
 }
+/********************/
+
+
+
+
+/* OVERLAY */
+#overlay {
+    font-size: 4rem;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+#overlay.show {
+    display: flex;
+}
+
+#restartBtn {
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 3rem;
+    cursor: pointer;
+    background-color: beig;
+}
+/********************/

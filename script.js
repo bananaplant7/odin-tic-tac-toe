@@ -1,6 +1,10 @@
 const board = document.querySelector('.gameBoard');
 const cells = document.querySelectorAll('.cell');
 const restartBtn = document.querySelector('#restartBtn');
+const msg = document.querySelector('#msg')
+const overlay = document.querySelector('#overlay')
+
+// relates the the game board
 const gameBoard = (() => {
     let _board = ['', '', '', '', '', '', '', '', '',];
 
@@ -10,9 +14,11 @@ const gameBoard = (() => {
             cells[i].textContent = _board[i];
         }
     }
+
     function getBoard() {
         return _board;
     }
+
     function placeMark(i) {
         _board[i] = flowOfTheGame.flipTurn();
     }
@@ -30,23 +36,10 @@ const gameBoard = (() => {
     };
 })();
 
-
-
-const Player = (marker) => {
-    const getMarker = () => marker;
-    return {
-        getMarker
-    };
-};
-
-const playerX = Player('X');
-const playerO = Player('O');
-
-
-
-// controls flow of game: turns, win or tie, 
+// controls flow of game: turns, win or tie, etc
 const flowOfTheGame = (() => {
     let currentTurn = '';
+
     let winningCombos = [
         [0, 1, 2],
         [3, 4, 5],
@@ -57,9 +50,11 @@ const flowOfTheGame = (() => {
         [0, 4, 8],
         [2, 4, 6],
     ];
+
     function getCurrentTurn() {
         return currentTurn;
     }
+
     function flipTurn() {
         if (currentTurn == 'X') {
             return currentTurn = 'O';
@@ -67,6 +62,7 @@ const flowOfTheGame = (() => {
             return currentTurn = 'X';
         }
     }
+
     function checkWin() {
         return winningCombos.some(combo => {
             return combo.every(index => {
@@ -74,30 +70,41 @@ const flowOfTheGame = (() => {
             });
         });
     }
+
     function checkTie() {
         return gameBoard.getBoard().every(index => {
             return (index != '');
         });
     }
-    function addListeners() {
-        cells.forEach(cell => cell.addEventListener('click', () => {
-            if (cell.textContent == '') {
-                gameBoard.placeMark(cell.id);
-                if (checkWin()) {
-                    console.log(`${getCurrentTurn()} is the winner`);
-                }
-                if (flowOfTheGame.checkTie()) {
-                    console.log('Tie');
-                }
-                gameBoard.displayBoard();
+
+    // if space is not marked, mark the spot & check for win or tie
+    // doing like this allows easy removal
+    let onClick = function () {
+        if (this.textContent == '') {
+            gameBoard.placeMark(this.id);
+            if (checkWin()) {
+                msg.textContent = `${getCurrentTurn()} IS THE WINNER`;
+                overlay.classList.add('show')
             }
-        }));
+            if (flowOfTheGame.checkTie()) {
+                msg.textContent = 'IT IS A TIE';
+                overlay.classList.add('show')
+            }
+            gameBoard.displayBoard();
+        }
+    };
+
+    function addListeners() {
+        cells.forEach(cell => cell.addEventListener('click', onClick));
     }
 
     function restartGame() {
         gameBoard.clearBoard();
         currentTurn = '';
+        msg.textContent = ''
+        overlay.classList.remove('show')
     }
+
     return {
         getCurrentTurn,
         flipTurn,
@@ -109,4 +116,4 @@ const flowOfTheGame = (() => {
 })();
 
 flowOfTheGame.addListeners();
-restartBtn.addEventListener('click', () => {flowOfTheGame.restartGame()})
+restartBtn.addEventListener('click', () => { flowOfTheGame.restartGame(); });
