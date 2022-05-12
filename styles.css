@@ -1,7 +1,7 @@
 /* GENERAL */
 @font-face {
     font-family: Eraser Font;
-    src: url(EraserDust-p70d.ttf);
+    src: url(assets/EraserDust-p70d.ttf);
 }
 
 *, *::after, *::before {
@@ -27,7 +27,7 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: url(chalkboard.png);
+    background-image: url(assets/chalkboard.png);
     background-size: 100% 100%;
     background-color: beige;
     color: #FBF7F5;
